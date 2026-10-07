@@ -12,7 +12,11 @@ export type Issue = {
 };
 
 const ID_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-const FRONTMATTER_KEYS = new Set(["title", "description", "aliases"]);
+const TERM_FIELDS = {
+  required: ["title", "description"],
+  optional: ["aliases"],
+};
+const INTRO_FIELDS = { required: ["title", "tagline"], optional: [] };
 const MARKERS = ["avoid", "usage"] as const;
 
 export function lint(content: Content): Issue[] {
@@ -110,11 +114,22 @@ export function lint(content: Content): Issue[] {
           message: "Переклад без EN-версії",
           hint: `спершу додайте content/en/terms/${term.id}.md — EN є Основною мовою`,
         });
-      issues.push(...lintFrontmatter(term));
+      issues.push(...lintFrontmatter(term, TERM_FIELDS));
       issues.push(...lintMarkers(term));
-      issues.push(...lintLinks(term, language.terms));
+      issues.push(...lintLinks(term, language.terms, "./"));
       issues.push(...lintMixedScript(term));
     }
+
+    if (language.intro) {
+      issues.push(...lintFrontmatter(language.intro, INTRO_FIELDS));
+      issues.push(...lintLinks(language.intro, language.terms, "./terms/"));
+      issues.push(...lintMixedScript(language.intro));
+    } else if (code === SOURCE_LANGUAGE)
+      issues.push({
+        file: `content/${code}/intro.md`,
+        message: "немає вступу для головної сторінки",
+        hint: "створіть intro.md з полями `title` і `tagline` та текстом вступу",
+      });
 
     if (language.equivalents) issues.push(...lintEquivalents(language));
   }
@@ -124,7 +139,10 @@ export function lint(content: Content): Issue[] {
 
 // ---------- frontmatter ----------
 
-function lintFrontmatter(term: Term): Issue[] {
+function lintFrontmatter(
+  term: Term,
+  fields: { required: string[]; optional: string[] }
+): Issue[] {
   if (term.frontmatterError)
     return [
       {
@@ -136,7 +154,8 @@ function lintFrontmatter(term: Term): Issue[] {
     ];
   const issues: Issue[] = [];
   const data = term.data!;
-  for (const key of ["title", "description"])
+  const allowed = new Set([...fields.required, ...fields.optional]);
+  for (const key of fields.required)
     if (typeof data[key] !== "string" || !(data[key] as string).trim())
       issues.push({
         file: term.file,
@@ -144,12 +163,12 @@ function lintFrontmatter(term: Term): Issue[] {
         message: `немає поля \`${key}\``,
       });
   for (const key of Object.keys(data))
-    if (!FRONTMATTER_KEYS.has(key))
+    if (!allowed.has(key))
       issues.push({
         file: term.file,
         line: 1,
         message: `невідоме поле \`${key}\``,
-        hint: `дозволені поля: ${[...FRONTMATTER_KEYS].join(", ")}`,
+        hint: `дозволені поля: ${[...allowed].join(", ")}`,
       });
   if (
     data.aliases !== undefined &&
@@ -230,19 +249,26 @@ function lintMarkers(term: Term): Issue[] {
 
 // ---------- links ----------
 
-function lintLinks(term: Term, siblings: Map<string, Term>): Issue[] {
+/** `prefix` is how the file reaches term files: `./` from a term, `./terms/` from intro.md. */
+function lintLinks(
+  term: Term,
+  siblings: Map<string, Term>,
+  prefix: string
+): Issue[] {
+  const escaped = prefix.replace(/[./]/g, "\\$&");
+  const relRe = new RegExp(`^${escaped}([a-z0-9-]+)\\.md(#.*)?$`);
   const issues: Issue[] = [];
   for (const { line, text } of bodyLines(term))
     for (const m of text.matchAll(/\]\(([^)\s]+)\)/g)) {
       const target = m[1]!;
       if (/^(https?:|mailto:|#)/.test(target)) continue;
-      const rel = target.match(/^\.\/([a-z0-9-]+)\.md(#.*)?$/);
+      const rel = target.match(relRe);
       if (!rel) {
         issues.push({
           file: term.file,
           line,
           message: `посилання \`${target}\` у неправильному форматі`,
-          hint: "на інший термін посилайтеся як `./term-id.md`",
+          hint: `на термін посилайтеся як \`${prefix}term-id.md\``,
         });
         continue;
       }
@@ -356,7 +382,9 @@ function lintEquivalents(language: import("./content.ts").Language): Issue[] {
       });
   }
 
-  for (const term of language.terms.values()) {
+  const texts = [...language.terms.values()];
+  if (language.intro) texts.push(language.intro);
+  for (const term of texts) {
     const lines = [
       { line: 1, text: String(term.data?.description ?? "") },
       ...bodyLines(term),

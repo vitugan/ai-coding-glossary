@@ -29,6 +29,8 @@ export type Language = {
   data: Record<string, unknown> | undefined;
   error?: string;
   terms: Map<string, Term>;
+  /** `<lang>/intro.md`: hero title, tagline and intro text of the home page. */
+  intro?: Term;
   equivalents?: Equivalents;
 };
 
@@ -142,6 +144,15 @@ export function loadContent(root = "content"): Content {
           parseTerm(id, code, file, readFileSync(join(termsDir, name), "utf8"))
         );
       }
+
+    const introFile = join(dir, "intro.md");
+    if (existsSync(introFile))
+      language.intro = parseTerm(
+        "intro",
+        code,
+        introFile.replace(/\\/g, "/"),
+        readFileSync(introFile, "utf8")
+      );
 
     const eqFile = join(dir, "equivalents.yaml");
     if (existsSync(eqFile)) {

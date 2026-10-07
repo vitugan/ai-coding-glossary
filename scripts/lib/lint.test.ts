@@ -20,6 +20,14 @@ const term = (
     `---\ntitle: ${title}\ndescription: Desc.\n${front}---\n\n${body}\n`
   );
 
+const intro = (lang: string, body = "Intro.") =>
+  parseTerm(
+    "intro",
+    lang,
+    `content/${lang}/intro.md`,
+    `---\ntitle: T\ntagline: Tag.\n---\n\n${body}\n`
+  );
+
 function language(
   code: string,
   terms: ReturnType<typeof term>[],
@@ -30,6 +38,7 @@ function language(
     file: `content/${code}/language.yaml`,
     data: { code, name: code, sections: { main: "Main" } },
     terms: new Map(terms.map((t) => [t.id, t])),
+    intro: intro(code),
   };
   if (equivalents !== undefined) {
     const data = parse(equivalents) ?? {};
@@ -254,6 +263,49 @@ describe("lint", () => {
         )
       ).toEqual([
         "content/uk/terms/harness.md: `title` «Обв'язка» не збігається з Відповідником «Оболонка»",
+      ]);
+    });
+  });
+
+  describe("intro", () => {
+    it("is required for EN only", () => {
+      const c = content([term("en", "a")], [term("uk", "a")]);
+      c.languages.get("uk")!.intro = undefined;
+      expect(messages(c)).toEqual([]);
+      c.languages.get("en")!.intro = undefined;
+      expect(messages(c)).toEqual([
+        "content/en/intro.md: немає вступу для головної сторінки",
+      ]);
+    });
+
+    it("requires title and tagline", () => {
+      const c = content([term("en", "a")]);
+      c.languages.get("en")!.intro = parseTerm(
+        "intro",
+        "en",
+        "content/en/intro.md",
+        "---\ntitle: T\n---\n\nText.\n"
+      );
+      expect(messages(c)).toEqual([
+        "content/en/intro.md: немає поля `tagline`",
+      ]);
+    });
+
+    it("links to terms via ./terms/ and is checked for avoided forms", () => {
+      const c = content(
+        [term("en", "harness")],
+        [term("uk", "harness", { title: "Оболонка" })],
+        {
+          equivalents: "harness:\n  uk: Оболонка\n  avoid: [харнес]\n",
+        }
+      );
+      c.languages.get("uk")!.intro = intro(
+        "uk",
+        "[оболонка](./terms/harness.md), [x](./harness.md), харнес"
+      );
+      expect(messages(c)).toEqual([
+        "content/uk/intro.md: посилання `./harness.md` у неправильному форматі",
+        "content/uk/intro.md: «харнес» — Заборонена форма для `harness`",
       ]);
     });
   });

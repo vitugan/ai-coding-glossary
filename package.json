@@ -5,13 +5,21 @@
   "packageManager": "pnpm@10.33.2",
   "scripts": {
     "migrate": "tsx scripts/migrate/migrate.ts && prettier --log-level warn --write content",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "lint:content": "tsx scripts/lint-content.ts",
+    "coverage": "tsx scripts/coverage.ts",
+    "test": "vitest run",
+    "typecheck": "tsc -p .",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@types/node": "^26.6.4",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.0",
     "prettier": "^3.9.9",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2",
+    "vitest": "^5.0.3",
     "yaml": "^2.9.1"
   }
 }

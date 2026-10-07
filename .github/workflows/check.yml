@@ -1,0 +1,30 @@
+name: Check
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - name: Lint content
+        run: pnpm lint:content
+      - name: Translation coverage
+        if: always()
+        run: pnpm coverage
+      - name: Format
+        run: pnpm exec prettier --check .
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Test
+        run: pnpm test

@@ -56,31 +56,81 @@ const UK_PATCHES: Record<
 > = {
   // Two translations of the same avoid/usage block; keep the second, cleaner one.
   "context-pointer": [
-    { stage: "raw", from: /_Уникайте:_ «довідка»[\s\S]*?(?=_Не варто казати:_)/, to: "" },
+    {
+      stage: "raw",
+      from: /_Уникайте:_ «довідка»[\s\S]*?(?=_Не варто казати:_)/,
+      to: "",
+    },
   ],
   mcp: [
-    { stage: "raw", from: "**Приклади використання:**", to: "_Приклади використання:_" },
+    {
+      stage: "raw",
+      from: "**Приклади використання:**",
+      to: "_Приклади використання:_",
+    },
   ],
-  context: [{ stage: "final", from: "помилково đoánює схему", to: "навмання вгадує схему" }],
+  context: [
+    {
+      stage: "final",
+      from: "помилково đoánює схему",
+      to: "навмання вгадує схему",
+    },
+  ],
   // «харнес» → Відповідник «оболонка»
   ai: [
-    { stage: "final", from: "[харнесс](./harness.md)", to: "[оболонка](./harness.md)" },
-    { stage: "final", from: "[харнессі](./harness.md)", to: "[оболонці](./harness.md)" },
+    {
+      stage: "final",
+      from: "[харнесс](./harness.md)",
+      to: "[оболонка](./harness.md)",
+    },
+    {
+      stage: "final",
+      from: "[харнессі](./harness.md)",
+      to: "[оболонці](./harness.md)",
+    },
   ],
   "context-window": [
-    { stage: "final", from: "[харнес](./harness.md) подав назад", to: "[оболонка](./harness.md) подала назад" },
+    {
+      stage: "final",
+      from: "[харнес](./harness.md) подав назад",
+      to: "[оболонка](./harness.md) подала назад",
+    },
   ],
   model: [
-    { stage: "final", from: "це харнесс (оболонка), який оркеструє", to: "це оболонка, яка оркеструє" },
-    { stage: "final", from: "[харнесі](./harness.md) (оболонці)", to: "[оболонці](./harness.md)" },
-    { stage: "final", from: "харнесс (оболонка) робить", to: "оболонка робить" },
+    {
+      stage: "final",
+      from: "це харнесс (оболонка), який оркеструє",
+      to: "це оболонка, яка оркеструє",
+    },
+    {
+      stage: "final",
+      from: "[харнесі](./harness.md) (оболонці)",
+      to: "[оболонці](./harness.md)",
+    },
+    {
+      stage: "final",
+      from: "харнесс (оболонка) робить",
+      to: "оболонка робить",
+    },
   ],
   "next-token-prediction": [
-    { stage: "final", from: "[харнесс](./harness.md) витягує", to: "[оболонка](./harness.md) витягує" },
+    {
+      stage: "final",
+      from: "[харнесс](./harness.md) витягує",
+      to: "[оболонка](./harness.md) витягує",
+    },
   ],
   stateless: [
-    { stage: "final", from: "[харнесом](./harness.md), який зберігає", to: "[оболонкою](./harness.md), яка зберігає" },
-    { stage: "final", from: "який харнесс (оболонка) завантажує", to: "який оболонка завантажує" },
+    {
+      stage: "final",
+      from: "[харнесом](./harness.md), який зберігає",
+      to: "[оболонкою](./harness.md), яка зберігає",
+    },
+    {
+      stage: "final",
+      from: "який харнесс (оболонка) завантажує",
+      to: "який оболонка завантажує",
+    },
   ],
 };
 
@@ -89,8 +139,13 @@ function applyPatches(text: string, id: string, stage: "raw" | "final") {
     if (p.stage !== stage) continue;
     const next = text.replace(p.from, p.to);
     if (next === text)
-      report.errors.push(`\`uk/${id}.md\`: патч не застосувався: \`${String(p.from).slice(0, 50)}\``);
-    else report.patches.push(`\`uk/${id}.md\`: «${String(p.from).slice(0, 50)}» → «${p.to.slice(0, 50)}»`);
+      report.errors.push(
+        `\`uk/${id}.md\`: патч не застосувався: \`${String(p.from).slice(0, 50)}\``
+      );
+    else
+      report.patches.push(
+        `\`uk/${id}.md\`: «${String(p.from).slice(0, 50)}» → «${p.to.slice(0, 50)}»`
+      );
     text = next;
   }
   return text;
@@ -164,9 +219,14 @@ function splitFrontmatter(src: string, file: string) {
     return { data: {} as Record<string, unknown>, body: src };
   }
   try {
-    return { data: (parse(m[1]!) ?? {}) as Record<string, unknown>, body: m[2]! };
+    return {
+      data: (parse(m[1]!) ?? {}) as Record<string, unknown>,
+      body: m[2]!,
+    };
   } catch {
-    report.notes.push(`\`${file}\`: невалідний YAML у frontmatter — розібрано построково`);
+    report.notes.push(
+      `\`${file}\`: невалідний YAML у frontmatter — розібрано построково`
+    );
     return { data: parseLoose(m[1]!), body: m[2]! };
   }
 }
@@ -212,7 +272,9 @@ function rewriteLinks(
       // `./AGENTS.md` means the term "AGENTS.md" (file `AGENTS.md.md`)
       const id = nameToId.get(name) ?? nameToId.get(`${name}.md`);
       if (!id) {
-        report.unlinked.push(`\`${file}\`: \`${whole}\` → «${label}» (такого терміна немає)`);
+        report.unlinked.push(
+          `\`${file}\`: \`${whole}\` → «${label}» (такого терміна немає)`
+        );
         return label;
       }
       return `[${label}](./${id}.md${hash})`;
@@ -296,9 +358,26 @@ function checkMarkerLayout(body: string, lang: Lang, file: string) {
 // ---------- mixed scripts ----------
 
 const LATIN_TO_CYR: Record<string, string> = {
-  a: "а", c: "с", e: "е", i: "і", o: "о", p: "р", x: "х", y: "у",
-  A: "А", B: "В", C: "С", E: "Е", H: "Н", I: "І", K: "К", M: "М",
-  O: "О", P: "Р", T: "Т", X: "Х",
+  a: "а",
+  c: "с",
+  e: "е",
+  i: "і",
+  o: "о",
+  p: "р",
+  x: "х",
+  y: "у",
+  A: "А",
+  B: "В",
+  C: "С",
+  E: "Е",
+  H: "Н",
+  I: "І",
+  K: "К",
+  M: "М",
+  O: "О",
+  P: "Р",
+  T: "Т",
+  X: "Х",
 };
 
 function fixMixedScript(body: string, lang: Lang, file: string): string {
@@ -325,7 +404,9 @@ function main() {
   const ukSections = parseCurriculum(show(UK_COMMIT, "internal/Curriculum.md"));
 
   if (enSections.length !== SECTION_IDS.length)
-    throw new Error(`Очікувалось ${SECTION_IDS.length} розділів, є ${enSections.length}`);
+    throw new Error(
+      `Очікувалось ${SECTION_IDS.length} розділів, є ${enSections.length}`
+    );
   if (ukSections.length !== enSections.length)
     throw new Error("Кількість розділів у EN і UK Curriculum різна");
 
@@ -337,7 +418,9 @@ function main() {
   enSections.forEach((section, i) => {
     const uk = ukSections[i]!;
     if (uk.items.length !== section.items.length)
-      report.errors.push(`Розділ ${i + 1}: різна кількість термінів у EN і UK Curriculum`);
+      report.errors.push(
+        `Розділ ${i + 1}: різна кількість термінів у EN і UK Curriculum`
+      );
     const ids: string[] = [];
     section.items.forEach((name, j) => {
       const id = toId(name);
@@ -350,7 +433,9 @@ function main() {
       const m = ukItem.match(/^(.+?) \((.+)\)$/);
       const [title, en] = m ? [m[1]!, m[2]!] : [ukItem, ukItem];
       if (en !== name)
-        report.errors.push(`UK Curriculum: «${ukItem}» не відповідає EN «${name}»`);
+        report.errors.push(
+          `UK Curriculum: «${ukItem}» не відповідає EN «${name}»`
+        );
       ukTitle.set(id, title);
       report.idTable.push({ name, id, uk: title });
     });
@@ -412,19 +497,23 @@ function main() {
         ...(aliases ? { aliases } : {}),
         ...rest,
       };
-      writeFileSync(join(OUT, lang, "terms", `${id}.md`), joinFrontmatter(front, text));
+      writeFileSync(
+        join(OUT, lang, "terms", `${id}.md`),
+        joinFrontmatter(front, text)
+      );
     }
 
     const en = markersByLang.en?.join(",");
     const uk = markersByLang.uk?.join(",");
     if (uk !== undefined && en !== uk)
-      report.markerIssues.push(
-        `\`${id}\`: маркери EN [${en}] ≠ UK [${uk}]`
-      );
+      report.markerIssues.push(`\`${id}\`: маркери EN [${en}] ≠ UK [${uk}]`);
   }
 
   // structure + languages
-  writeFileSync(join(OUT, "structure.yaml"), stringify(structure, { lineWidth: 0 }));
+  writeFileSync(
+    join(OUT, "structure.yaml"),
+    stringify(structure, { lineWidth: 0 })
+  );
   const languageFile = (code: Lang, name: string, sections: Section[]) =>
     writeFileSync(
       join(OUT, code, "language.yaml"),
@@ -469,10 +558,19 @@ function writeReport() {
     section("Помилки (блокують імпорт)", report.errors),
     section("Маркери avoid / usage — перевірити вручну", report.markerIssues),
     section("Заборонені форми — переписати вручну", report.forbidden),
-    section("Латиниця в кирилиці — виправлено автоматично", report.homoglyphFixes),
-    section("Змішані слова — не виправлено, перевірити", report.mixedScriptLeft),
+    section(
+      "Латиниця в кирилиці — виправлено автоматично",
+      report.homoglyphFixes
+    ),
+    section(
+      "Змішані слова — не виправлено, перевірити",
+      report.mixedScriptLeft
+    ),
     section("Ручні правки тексту (UK_PATCHES у скрипті)", report.patches),
-    section("Посилання на неіснуючі терміни — замінено текстом", report.unlinked),
+    section(
+      "Посилання на неіснуючі терміни — замінено текстом",
+      report.unlinked
+    ),
     section("Примітки", report.notes),
     `## Таблиця ID (${report.idTable.length})\n`,
     "| EN | ID | UK |",

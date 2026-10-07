@@ -1,6 +1,6 @@
 ---
-// Fallback for the site root. In production nginx redirects by the browser
-// language first (deploy/nginx.conf); this only runs without it.
+// Fallback for the site root. In production .htaccess redirects by the browser
+// language first (public/.htaccess); this only runs without it.
 const target = `${import.meta.env.BASE_URL.replace(/\/?$/, "/")}uk/`;
 ---
 

@@ -1,9 +1,26 @@
+# Checks every PR and push; on main also deploys the build to Fornex (cPanel)
+# over SSH — the same setup as vitugan/evakuatorzhytomyr.
+#
+# Required repo secrets:
+#   SSH_HOST         - server hostname from Fornex/cPanel
+#   SSH_USER         - cPanel username
+#   SSH_PRIVATE_KEY  - private key of the deploy key pair (public key authorized in cPanel)
+#   SSH_KNOWN_HOSTS  - output of: ssh-keyscan -p <port> <host>
+# Repo variables:
+#   DEPLOY_PATH      - required: the site's document root, relative to the home dir,
+#                      e.g. public_html/aiglossary.ineshost.net/
+#   SSH_PORT         - defaults to 20022 (Fornex shared hosting)
+
 name: Check
 
 on:
   pull_request:
   push:
     branches: [main]
+  workflow_dispatch: # allow manual deploy from the Actions tab
+
+env:
+  SITE_URL: https://aiglossary.ineshost.net
 
 jobs:
   check:
@@ -30,3 +47,69 @@ jobs:
         run: pnpm test
       - name: Build site
         run: pnpm build
+
+      - name: Keep the build for deploy
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v7
+        with:
+          name: site
+          path: site/dist
+          include-hidden-files: true # .htaccess
+          retention-days: 7
+
+  # Deploys what `check` built, only from main and only if every check passed.
+  deploy:
+    needs: check
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    # Never run two deploys at the same time
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
+    environment:
+      name: production
+      url: ${{ env.SITE_URL }}
+    env:
+      SSH_PORT: ${{ vars.SSH_PORT || '20022' }}
+      DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: site
+          path: dist
+
+      # Guard: rsync --delete on an empty/broken build or a wrong path would
+      # wipe the live site — or every site under public_html.
+      - name: Check build output and target
+        run: |
+          test -f dist/index.html || { echo "dist/index.html missing, aborting deploy"; exit 1; }
+          test -f dist/.htaccess || { echo "dist/.htaccess missing, aborting deploy"; exit 1; }
+          case "$DEPLOY_PATH" in
+            ""|/*|*..*|public_html|public_html/|./|.)
+              echo "Set repo variable DEPLOY_PATH to the site's own folder, e.g. public_html/aiglossary.ineshost.net/ (got '$DEPLOY_PATH')"
+              exit 1 ;;
+          esac
+
+      - name: Configure SSH
+        run: |
+          install -m 700 -d ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      # --delete removes files that no longer exist in dist/.
+      # Excluded paths are never touched on the server (SSL validation, cPanel files).
+      - name: Deploy via rsync
+        run: |
+          rsync -rlvz --delete --checksum \
+            --exclude '.well-known/' \
+            --exclude 'cgi-bin/' \
+            --exclude '.user.ini' \
+            --exclude 'php.ini' \
+            -e "ssh -i ~/.ssh/deploy_key -p $SSH_PORT -o StrictHostKeyChecking=yes" \
+            dist/ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${DEPLOY_PATH%/}/"
+
+      - name: Cleanup SSH key
+        if: always()
+        run: rm -f ~/.ssh/deploy_key

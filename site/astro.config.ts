@@ -18,8 +18,8 @@ const translations = (text: (lang: string) => string) =>
   Object.fromEntries(others.map((l) => [l.code, text(l.code)]));
 
 export default defineConfig({
-  site: process.env.SITE_URL,
-  // Subfolder on the VPS for now; becomes "/" once the site has its own domain.
+  site: process.env.SITE_URL ?? "https://aiglossary.ineshost.net",
+  // The site lives at the domain root; set BASE_PATH only to serve it from a subfolder.
   base: process.env.BASE_PATH ?? "/",
   trailingSlash: "always",
   integrations: [
@@ -41,8 +41,14 @@ export default defineConfig({
         "./src/styles/theme.css",
         "./src/styles/variants.css",
       ],
-      // TEMPORARY: ?accent=blue|amber|teal&logo=letters|dialogue|book preview switch.
       head: [
+        {
+          // Remember the reader's language: .htaccess reads it when redirecting
+          // the site root (site/public/.htaccess).
+          tag: "script",
+          content: `try { document.cookie = "lang=" + document.documentElement.lang + "; path=/; max-age=31536000; samesite=lax"; } catch {}`,
+        },
+        // TEMPORARY: ?accent=blue|amber|teal&logo=letters|dialogue|book preview switch.
         {
           tag: "script",
           content: `(() => {

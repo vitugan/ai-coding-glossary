@@ -8,3 +8,14 @@ sections:
   handoffs: Handoffs
   memory: Memory and Steering
   patterns-of-work: Patterns of Work
+ui:
+  avoid: Avoid
+  usage: Usage
+  also: also
+  start: Start with “{term}”
+  contents: Contents
+  equivalents: Translation glossaries
+  equivalentsIntro: Approved translations of AI coding terms into each language, and the variants to avoid.
+  translate: Translate this term
+  report: Report a problem
+  attribution: Grew out of the {link} by Matt Pocock.

@@ -1,0 +1,27 @@
+---
+// Starlight's "not translated yet" notice + a link that starts the translation.
+import ContentNotice from "@astrojs/starlight/components/ContentNotice.astro";
+import { t } from "./labels.ts";
+
+const { entry, locale } = Astro.locals.starlightRoute;
+const translateUrl = locale ? entry.data.term?.translate?.[locale] : undefined;
+---
+
+<ContentNotice
+  icon="warning"
+  label={Astro.locals.t("i18n.untranslatedContent")}
+/>
+{
+  translateUrl && (
+    <p class="translate">
+      <a href={translateUrl}>{t(locale).translate} →</a>
+    </p>
+  )
+}
+
+<style>
+  .translate {
+    margin-top: 0.5rem;
+    font-size: var(--sl-text-sm);
+  }
+</style>

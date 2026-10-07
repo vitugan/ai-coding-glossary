@@ -1,0 +1,19 @@
+---
+// Fallback for the site root. In production nginx redirects by the browser
+// language first (deploy/nginx.conf); this only runs without it.
+const target = `${import.meta.env.BASE_URL.replace(/\/?$/, "/")}uk/`;
+---
+
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content={`0; url=${target}`} />
+    <link rel="canonical" href={target} />
+    <title>Словник AI-кодингу · AI Coding Glossary</title>
+  </head>
+  <body>
+    <a href={target}>Словник AI-кодингу</a> ·
+    <a href={target.replace(/uk\/$/, "en/")}>AI Coding Glossary</a>
+  </body>
+</html>

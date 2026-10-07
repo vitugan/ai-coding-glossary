@@ -8,3 +8,15 @@ sections:
   handoffs: Передача роботи
   memory: Пам'ять і керування
   patterns-of-work: Способи роботи
+ui:
+  avoid: Уникайте
+  usage: Приклад
+  also: також
+  start: Почати з «{term}»
+  contents: Зміст
+  equivalents: Глосарій перекладу
+  equivalentsIntro: Затверджені українські відповідники англійських понять AI-кодингу і варіанти, яких варто уникати.
+  equivalentsColumns: [English, Українська, Уникати]
+  translate: Перекласти цей термін
+  report: Повідомити про помилку
+  attribution: Створено на основі {link} Метта Покока.

@@ -10,7 +10,9 @@
     "coverage": "tsx scripts/coverage.ts",
     "test": "vitest run",
     "typecheck": "tsc -p .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "dev": "pnpm --filter site dev",
+    "build": "pnpm --filter site build"
   },
   "devDependencies": {
     "@types/node": "^26.6.4",

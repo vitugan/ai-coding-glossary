@@ -1,0 +1,40 @@
+/* Light identity on top of Starlight: font, accent, term-page blocks. */
+
+:root {
+  --sl-font: "Inter Variable", system-ui, sans-serif;
+}
+
+/* ---------- term page ---------- */
+
+.term-meta {
+  margin-top: 0;
+  font-size: var(--sl-text-sm);
+  color: var(--sl-color-gray-3);
+}
+
+/* The first paragraph restates the description: show it as the lead. */
+.sl-markdown-content > .term-meta + p {
+  font-size: var(--sl-text-lg);
+  color: var(--sl-color-white);
+}
+
+/* Usage: paragraphs are lines of a dialogue, alternating sides. */
+.dialogue {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.sl-markdown-content .dialogue > p {
+  max-width: 85%;
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  border-end-start-radius: 0.25rem;
+  background: var(--sl-color-gray-6);
+}
+.sl-markdown-content .dialogue > p:nth-child(even) {
+  align-self: flex-end;
+  border-end-start-radius: 1rem;
+  border-end-end-radius: 0.25rem;
+  background: var(--sl-color-accent-low);
+}

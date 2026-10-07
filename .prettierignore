@@ -1,3 +1,7 @@
 pnpm-lock.yaml
 migration-report.md
 content/LICENSE
+site/src/content/docs/
+site/src/generated/
+site/dist/
+site/.astro/

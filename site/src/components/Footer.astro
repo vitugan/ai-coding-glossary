@@ -1,0 +1,42 @@
+---
+// Starlight's footer (edit links + pagination) + attribution to the upstream dictionary.
+import EditLink from "virtual:starlight/components/EditLink";
+import Pagination from "virtual:starlight/components/Pagination";
+import { t } from "./labels.ts";
+
+const { locale } = Astro.locals.starlightRoute;
+const [before, after] = t(locale).attribution.split("{link}");
+---
+
+<footer class="sl-flex">
+  <div class="meta sl-flex">
+    <EditLink />
+  </div>
+  <Pagination />
+  <p class="attribution">
+    {before}<a href="https://github.com/mattpocock/dictionary-of-ai-coding"
+      >AI Coding Dictionary</a
+    >{after}
+  </p>
+</footer>
+
+<style>
+  footer {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .meta {
+    margin-top: 3rem;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-3);
+  }
+  .attribution {
+    margin: 1.5rem auto 0;
+    font-size: var(--sl-text-xs);
+    color: var(--sl-color-gray-3);
+    text-align: center;
+  }
+  .attribution a {
+    color: inherit;
+  }
+</style>

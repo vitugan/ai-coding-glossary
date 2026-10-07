@@ -1,0 +1,10 @@
+code: uk
+name: Українська
+sections:
+  model: Модель
+  sessions: Сесії, контекстні вікна та репліки (відповіді)
+  tools: Інструменти та середовище
+  failure-modes: Типові збої
+  handoffs: Передача роботи (Handoff)
+  memory: Пам'ять і керування (Memory and Steering)
+  patterns-of-work: Способи роботи (Patterns of Work)

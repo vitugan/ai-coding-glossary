@@ -1,0 +1,10 @@
+code: en
+name: English
+sections:
+  model: The Model
+  sessions: Sessions, Context Windows & Turns
+  tools: Tools & Environment
+  failure-modes: Failure Modes
+  handoffs: Handoffs
+  memory: Memory and Steering
+  patterns-of-work: Patterns of Work

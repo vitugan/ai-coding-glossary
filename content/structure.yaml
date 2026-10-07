@@ -1,0 +1,86 @@
+sections:
+  - id: model
+    terms:
+      - ai
+      - model
+      - parameters
+      - training
+      - inference
+      - effort
+      - token
+      - next-token-prediction
+      - non-determinism
+      - model-provider
+      - harness
+      - model-provider-request
+      - input-tokens
+      - output-tokens
+      - prefix-cache
+      - cache-tokens
+  - id: sessions
+    terms:
+      - stateless
+      - context
+      - context-window
+      - stateful
+      - agent
+      - system-prompt
+      - session
+      - turn
+  - id: tools
+    terms:
+      - environment
+      - filesystem
+      - tool
+      - tool-call
+      - tool-result
+      - mcp
+      - permission-request
+      - permission-mode
+      - agent-mode
+      - sandbox
+  - id: failure-modes
+    terms:
+      - sycophancy
+      - hallucination
+      - parametric-knowledge
+      - knowledge-cutoff
+      - contextual-knowledge
+      - attention-relationship
+      - attention-budget
+      - attention-degradation
+      - smart-zone
+  - id: handoffs
+    terms:
+      - clearing
+      - handoff
+      - primary-source
+      - secondary-source
+      - handoff-artifact
+      - spec
+      - ticket
+      - compaction
+      - autocompact
+  - id: memory
+    terms:
+      - memory-system
+      - agents-md
+      - progressive-disclosure
+      - context-pointer
+      - skill
+      - subagent
+  - id: patterns-of-work
+    terms:
+      - human-in-the-loop
+      - afk
+      - automated-check
+      - automated-review
+      - human-review
+      - vibe-coding
+      - design-concept
+      - grilling
+      - prototyping
+      - dx
+      - ax
+      - software-factory
+      - dark-factory

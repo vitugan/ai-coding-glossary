@@ -1,0 +1,216 @@
+# Відповідники EN → UK і Заборонені форми. Ключ — ID терміна Словника
+# або EN-слово, що не є терміном (prompt, commit…).
+ai:
+  uk: ШІ
+  avoid: []
+model:
+  uk: Модель
+  avoid: []
+parameters:
+  uk: Параметри
+  avoid: []
+training:
+  uk: Тренування
+  avoid: []
+inference:
+  uk: Генерування відповіді
+  avoid: []
+effort:
+  uk: Рівень зусиль
+  avoid: []
+token:
+  uk: Токен
+  avoid: []
+next-token-prediction:
+  uk: Передбачення наступного токена
+  avoid: []
+non-determinism:
+  uk: Недетермінованість
+  avoid: []
+model-provider:
+  uk: Постачальник моделі
+  avoid: []
+harness:
+  uk: Оболонка
+  avoid:
+    - харнес
+model-provider-request:
+  uk: Запит до постачальника моделі
+  avoid: []
+input-tokens:
+  uk: Вхідні токени
+  avoid: []
+output-tokens:
+  uk: Вихідні токени
+  avoid: []
+prefix-cache:
+  uk: Кеш префіксів
+  avoid: []
+cache-tokens:
+  uk: Кешовані токени
+  avoid: []
+stateless:
+  uk: Без збереження стану
+  avoid: []
+context:
+  uk: Контекст
+  avoid: []
+context-window:
+  uk: Контекстне вікно
+  avoid: []
+stateful:
+  uk: Зі збереженням стану
+  avoid: []
+agent:
+  uk: Агент
+  avoid: []
+system-prompt:
+  uk: Системна інструкція
+  avoid: []
+session:
+  uk: Сесія
+  avoid: []
+turn:
+  uk: Репліка
+  avoid: []
+environment:
+  uk: Середовище
+  avoid: []
+filesystem:
+  uk: Файлова система
+  avoid: []
+tool:
+  uk: Інструмент
+  avoid: []
+tool-call:
+  uk: Виклик інструмента
+  avoid: []
+tool-result:
+  uk: Результат роботи інструмента
+  avoid: []
+mcp:
+  uk: MCP
+  avoid: []
+permission-request:
+  uk: Запит на дозвіл
+  avoid: []
+permission-mode:
+  uk: Режим дозволів
+  avoid: []
+agent-mode:
+  uk: Режим агента
+  avoid: []
+sandbox:
+  uk: Пісочниця
+  avoid: []
+sycophancy:
+  uk: Догоджання
+  avoid: []
+hallucination:
+  uk: Галюцинації
+  avoid: []
+parametric-knowledge:
+  uk: Вбудовані знання
+  avoid: []
+knowledge-cutoff:
+  uk: Межа знань
+  avoid: []
+contextual-knowledge:
+  uk: Знання з контексту
+  avoid: []
+attention-relationship:
+  uk: Зв'язки уваги
+  avoid: []
+attention-budget:
+  uk: Ресурс уваги
+  avoid: []
+attention-degradation:
+  uk: Розсіювання уваги
+  avoid: []
+smart-zone:
+  uk: Розумна зона
+  avoid: []
+clearing:
+  uk: Очищення
+  avoid: []
+handoff:
+  uk: Передача
+  avoid: []
+primary-source:
+  uk: Першоджерело
+  avoid: []
+secondary-source:
+  uk: Вторинне джерело
+  avoid: []
+handoff-artifact:
+  uk: Документ для передачі
+  avoid: []
+spec:
+  uk: Специфікація
+  avoid: []
+ticket:
+  uk: Задача
+  avoid: []
+compaction:
+  uk: Стиснення
+  avoid: []
+autocompact:
+  uk: Автостиснення
+  avoid: []
+memory-system:
+  uk: Система пам'яті
+  avoid: []
+agents-md:
+  uk: Файл інструкцій для агента
+  avoid: []
+progressive-disclosure:
+  uk: Поступове розкриття
+  avoid: []
+context-pointer:
+  uk: Вказівник на контекст
+  avoid: []
+skill:
+  uk: Навичка
+  avoid: []
+subagent:
+  uk: Допоміжний агент
+  avoid: []
+human-in-the-loop:
+  uk: Під наглядом людини
+  avoid: []
+afk:
+  uk: Без нагляду
+  avoid: []
+automated-check:
+  uk: Автоматична перевірка
+  avoid: []
+automated-review:
+  uk: Автоматичний огляд
+  avoid: []
+human-review:
+  uk: Огляд людиною
+  avoid: []
+vibe-coding:
+  uk: Вайб-кодинг
+  avoid: []
+design-concept:
+  uk: Дизайн-концепція
+  avoid: []
+grilling:
+  uk: Ретельне розпитування
+  avoid: []
+prototyping:
+  uk: Прототипування
+  avoid: []
+dx:
+  uk: Зручність для розробника
+  avoid: []
+ax:
+  uk: Зручність для агента
+  avoid: []
+software-factory:
+  uk: Програмна фабрика
+  avoid: []
+dark-factory:
+  uk: Темна фабрика
+  avoid: []

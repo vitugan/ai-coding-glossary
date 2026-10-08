@@ -4,6 +4,22 @@
   --sl-font: "Inter Variable", system-ui, sans-serif;
 }
 
+/* Accent: the blue of the logo (src/assets/logo.svg). Dark theme is the default. */
+:root {
+  --sl-color-accent-low: #0b2447;
+  --sl-color-accent: #3b82f6;
+  --sl-color-accent-high: #c7dcfe;
+}
+:root[data-theme="light"] {
+  --sl-color-accent-low: #d6e6ff;
+  --sl-color-accent: #0057b8;
+  --sl-color-accent-high: #082a57;
+}
+
+.site-title img {
+  border-radius: 0.375rem;
+}
+
 /* ---------- term page ---------- */
 
 .term-meta {

@@ -34,34 +34,17 @@ export default defineConfig({
           { label: String(l.data?.name ?? l.code), lang: l.code },
         ])
       ),
+      logo: { src: "./src/assets/logo.svg", alt: "" },
+      favicon: "/favicon.svg",
       social: [{ icon: "github", label: "GitHub", href: REPO }],
       editLink: { baseUrl: `${REPO}/edit/main/` },
-      customCss: [
-        "@fontsource-variable/inter",
-        "./src/styles/theme.css",
-        "./src/styles/variants.css",
-      ],
+      customCss: ["@fontsource-variable/inter", "./src/styles/theme.css"],
       head: [
         {
           // Remember the reader's language: .htaccess reads it when redirecting
           // the site root (site/public/.htaccess).
           tag: "script",
           content: `try { document.cookie = "lang=" + document.documentElement.lang + "; path=/; max-age=31536000; samesite=lax"; } catch {}`,
-        },
-        // TEMPORARY: ?accent=blue|amber|teal&logo=letters|dialogue|book preview switch.
-        {
-          tag: "script",
-          content: `(() => {
-            const params = new URLSearchParams(location.search);
-            for (const key of ["accent", "logo"]) {
-              let value = params.get(key);
-              try {
-                value ??= sessionStorage.getItem(key);
-                if (value) sessionStorage.setItem(key, value);
-              } catch {}
-              if (value) document.documentElement.dataset[key] = value;
-            }
-          })();`,
         },
       ],
       components: {
